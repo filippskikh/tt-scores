@@ -47,41 +47,41 @@
                 <form>
                     <div class="row">
                         <div class="col">
-                            <select class="form-control">
-                                <option selected>Выберите</option>
-                                <option>Команда 1</option>
-                                <option>Команда 2</option>
-                                <option>Команда 3</option>
-                                <option>Команда 4</option>
+                            <select id="team1" class="form-control">
+                                <option selected>Выберите
+
+                                {% for team in teams %}
+                                <option value="{{ team.id }}">{{ team.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col">
                             <div class="row">
                                 <div class="col">
-                                    <input type="text" class="form-control" placeholder="Очки">
+                                    <input id="score1" type="text" class="form-control" placeholder="Очки">
                                 </div>
                                 <div class="col-2">
                                     -
                                 </div>
                                 <div class="col">
-                                    <input type="text" class="form-control" placeholder="Очки">
+                                    <input id="score2" type="text" class="form-control" placeholder="Очки">
                                 </div>
                             </div>
                         </div>
                         <div class="col">
-                            <select class="form-control">
+                            <select id="team2" class="form-control">
                                 <option selected>Выберите</option>
-                                <option>Команда 1</option>
-                                <option>Команда 2</option>
-                                <option>Команда 3</option>
-                                <option>Команда 4</option>
+
+                                {% for team in teams %}
+                                <option value="{{ team.id }}">{{ team.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
 
                     </div>
                     <div class="row mt-3">
                         <div class="col">
-                        <button type="button" class="btn btn-success float-right">Добавить</button>
+                            <button id="add-game" type="button" class="btn btn-success float-right">Добавить</button>
                         </div>
                     </div>
 
@@ -98,33 +98,21 @@
             </tr>
             </thead>
             <tbody>
+            {% for game in games %}
             <tr>
-                <td>Даник</td>
-                <td>16-0</td>
-                <td>Киря</td>
-                <td>31.12.2021</td>
+                <td>{{ game.team1_name }}</td>
+                <td>{{ game.score1 }} - {{ game.score2 }}</td>
+                <td>{{ game.team2_name }}</td>
+                <td>{{ game.date }}</td>
             </tr>
-            <tr>
-                <td>Андрей</td>
-                <td>12-11</td>
-                <td>Коля</td>
-                <td>31.12.1996</td>
-            </tr>
-            <tr>
-                <td>Женя</td>
-                <td>1111-1111</td>
-                <td>Настя</td>
-                <td>01.09.2000</td>
-            </tr>
+            {% endfor %}
             </tbody>
         </table>
 
     </div>
 
 
-
-
-        <div class="container">
+    <div class="container">
         <h1>Команды</h1>
         <p>
             <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#collapseTeams"
@@ -137,10 +125,10 @@
                 <form>
                     <div class="row">
                         <div class="col">
-                            <input class="form-control" placeholder="Название команды">
+                            <input id="team-name" class="form-control" placeholder="Название команды">
                         </div>
                         <div class="col-2">
-                        <button type="button" class="btn btn-success float-right">Добавить</button>
+                            <button id="add-team-button" type="button" class="btn btn-success float-right">Добавить</button>
                         </div>
                     </div>
 
@@ -157,24 +145,14 @@
             </tr>
             </thead>
             <tbody>
+            {% for team in teams %}
             <tr>
-                <td>Даник</td>
-                <td>16</td>
-                <td>0</td>
-                <td>0</td>
+                <td>{{ team.name }}</td>
+                <td>{{ team.wins }}</td>
+                <td>{{ team.losses }}</td>
+                <td>{{ team.draws }}</td>
             </tr>
-            <tr>
-                <td>Андрей</td>
-                <td>0</td>
-                <td>138782937</td>
-                <td>4894878298928948298</td>
-            </tr>
-            <tr>
-                <td>Киря</td>
-                <td>0</td>
-                <td>1111489879485</td>
-                <td>11117485798430</td>
-            </tr>
+            {% endfor %}
             </tbody>
         </table>
 
@@ -183,15 +161,42 @@
 </main><!-- /.container -->
 
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+<script>
+    $("#add-team-button").click(function () {
+        let teamName = $("#team-name").val()
 
+        $.ajax({
+            url: "/add_team?team_name=" + teamName,
+        })
+        .done(function( data ) {
+            if (data === "Success") {
+                window.location = window.location
+            }
+        })
+    })
+
+    $("#add-game").click(function () {
+        let team1Id = $("#team1").val()
+        let team2Id = $("#team2").val()
+        let team1Score = $("#score1").val()
+        let team2Score = $("#score2").val()
+
+        $.ajax({
+            url: "/add_game?team1_id=" + team1Id + "&team2_id=" + team2Id + "&score1=" + team1Score + '&score2=' + team2Score,
+        })
+        .done(function( data ) {
+            if (data === "Success") {
+                window.location = window.location
+            }
+        })
+    })
+</script>
 </body>
 </html>
