@@ -42,6 +42,7 @@ def index():
     return render_template('index.html.j2', teams=teams_view, games=games_view)
 
 
+database.init()
+
 if __name__ == "__main__":
-    database.init()
     app.run(debug=True)

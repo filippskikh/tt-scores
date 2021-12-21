@@ -5,7 +5,7 @@ import requests
 
 GAMES_INDEX = "games"
 TEAMS_INDEX = "teams"
-ELASTIC_ADDRESS = "http://localhost:9200"
+ELASTIC_ADDRESS = "http://elastic:9200"
 
 
 def get_games():
